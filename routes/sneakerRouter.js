@@ -3,22 +3,17 @@ const express = require("express");
 
 const router = express.Router();
 
-let items = [
-    {
-        title: "test"
-    },
-    {
-        title: "test"
-    },
-    {
-        title: "test"
-    },
-]
+const Note = require("../models/sneakerModel");
 
 // create route /
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     console.log("GET");
-    res.json(items)
+    try {
+        let notes = await Note.find();
+        res.json(notes)
+    } catch {
+        res.status(500).send()
+    }
 })
 
 // create route for detail
@@ -29,9 +24,23 @@ router.get("/:id", (req, res) => {
 
 
 // create route /
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     console.log("POST");
-    res.send("hello express!!!")
+
+    // this need to be an request to work
+    let note = new Note({
+        title: "new shoe",
+        body: "sneaker",
+        author: "Nike"
+    })
+    try {
+        await note.save();
+        res.json(note)
+    } catch {
+        res.status(500).send()
+    }
+
+
 })
 
 // create route /
